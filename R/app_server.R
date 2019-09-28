@@ -1,4 +1,4 @@
 #' @import shiny
 app_server <- function(input, output,session) {
-  # List the first level callModules here
+  callModule(mod_station_selector_server, "station_selector_ui_1")
 }

@@ -7,8 +7,15 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    shiny, 
-    golem
-RoxygenNote: 6.1.0
+    shiny,
+    golem,
+    processx,
+    attempt,
+    DT,
+    glue,
+    htmltools
+RoxygenNote: 6.1.1
 URL: https://github.com/xari/transit.git
 BugReports: https://github.com/xari/transit.git/issues
+Suggests: 
+    testthat
