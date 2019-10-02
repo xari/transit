@@ -1,6 +1,6 @@
 # Module UI
 
-#' @title   mod_connection_ui and mod_connection_server
+#' @title   mod_connection_table_ui and mod_connection_table_server
 #' @description  A shiny Module.
 #'
 #' @param id shiny id
@@ -8,34 +8,28 @@
 #' @param output internal
 #' @param session internal
 #'
-#' @rdname mod_connection
+#' @rdname mod_connection_table
 #'
 #' @keywords internal
 #' @export
 #' @importFrom shiny NS tagList
-mod_connection_ui <- function(id) {
+mod_connection_table_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(textOutput(ns("text")),
-          DT::DTOutput(ns("connection_details")))
+  DT::DTOutput(ns("connection_details"))
 }
 
 # Module Server
 
-#' @rdname mod_connection
+#' @rdname mod_connection_table
 #' @export
 #' @keywords internal
 
-mod_connection_server <- function(input, output, session, ...) {
+mod_connection_table_server <- function(input, output, session, data) {
   ns <- session$ns
 
-  args <- list(...)
-
-  output$text <- renderText(args$transfers)
-
   output$connection_details <- DT::renderDT(
-    args$sections %>%
-      dplyr::select(-origin_x,-origin_y,-destination_x,-destination_y),
+    data,
     rownames = FALSE,
     options = list(
       info = FALSE,

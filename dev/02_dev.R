@@ -8,7 +8,8 @@
 ## 2.1 Add modules
 ##
 golem::add_module( name = "station_selector" )
-golem::add_module( name = "connection" ) # Name of the module
+golem::add_module( name = "connections" )
+golem::add_module( name = "connection_table" )
 
 ## 2.2 Add dependencies
 

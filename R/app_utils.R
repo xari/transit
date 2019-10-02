@@ -1,18 +1,17 @@
-initConnectionModule <-
-  function(...) {
-    args <- list(...)
+getStations <- "function(query, callback) {
+  if (!query.length) return callback();
 
-    # Create unique ID for each module instance
-    module_unique_id <- stringr::str_c("connection_", args$rowid)
-
-    # Create module UIs
-    mod_connection_ui(module_unique_id)
-
-    # Call modules
-    callModule(mod_connection_server,
-               module_unique_id,
-               ...)
-  }
+  fetch('http://transport.opendata.ch/v1/locations?query='+encodeURIComponent(query)+'&limit=10')
+    .then(function(response) {
+      return response.json();
+  })
+    .then(function(responseJSON) {
+      callback(responseJSON.stations.map(station => ({
+        id: station.id,
+        name: station.name
+      })));
+  });
+}"
 
 get_locations <- function(search_string) {
   httr::GET(
@@ -62,4 +61,9 @@ get_next_departures <- function(origin, destination) {
       ) %>%
         purrr::map( ~ purrr::map_dfr(., tidyr::as_tibble))
     )
+}
+
+getConnectionTable <- function(sections) {
+  sections %>%
+    dplyr::select(-origin_x, -origin_y, -destination_x, -destination_y)
 }

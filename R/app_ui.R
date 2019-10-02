@@ -6,7 +6,13 @@ app_ui <- function() {
     # List the first level UI elements here
     fluidPage(
       h1("transit"),
-      mod_station_selector_ui("station_selector_ui_1")
+      origin_ui <-
+        mod_station_selector_ui("station_selector_ui_origin",
+                                label = "Select your origin."),
+      destination_ui <-
+        mod_station_selector_ui("station_selector_ui_destination",
+                                label = "Select your destination."),
+      mod_connections_ui("connections_ui")
     )
   )
 }
