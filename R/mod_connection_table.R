@@ -16,7 +16,10 @@
 mod_connection_table_ui <- function(id) {
   ns <- NS(id)
 
-  DT::DTOutput(ns("connection_details"))
+  tagList(
+    textOutput(ns("overview")),
+    shinydashboardPlus::accordion(uiOutput(ns("connection")))
+  )
 }
 
 # Module Server
@@ -25,16 +28,45 @@ mod_connection_table_ui <- function(id) {
 #' @export
 #' @keywords internal
 
-mod_connection_table_server <- function(input, output, session, data) {
-  ns <- session$ns
+mod_connection_table_server <-
+  function(input, output, session, data) {
+    ns <- session$ns
 
-  output$connection_details <- DT::renderDT(
-    data,
-    rownames = FALSE,
-    options = list(
-      info = FALSE,
-      paging = FALSE,
-      searching = FALSE
+    output$overview <- renderText(paste(data$departure, data$arrival, data$duration, data$transfers))
+
+    output$connection <- renderUI(
+      shinydashboardPlus::accordionItem(
+        id = ns("connection"),
+        title = "Show itinerary",
+        color = "danger",
+        collapsed = TRUE,
+        div(class = "card",
+            div(
+              class = "collapse show",
+              div(
+                class = "card-body",
+                renderTable(
+                  data$sections %>%
+                    dplyr::select(-origin_x,-origin_y,-destination_x,-destination_y),
+                  rownames = FALSE,
+                  options = list(
+                    info = FALSE,
+                    paging = FALSE,
+                    searching = FALSE
+                  )
+                )
+              )
+            ))
+      )
     )
-  )
-}
+
+    # output$connection <- DT::renderDT(
+    #   data$sections,
+    #   rownames = FALSE,
+    #   options = list(
+    #     info = FALSE,
+    #     paging = FALSE,
+    #     searching = FALSE
+    #   )
+    # )
+  }

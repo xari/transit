@@ -5,14 +5,18 @@ app_ui <- function() {
     golem_add_external_resources(),
     # List the first level UI elements here
     fluidPage(
-      h1("transit"),
-      origin_ui <-
-        mod_station_selector_ui("station_selector_ui_origin",
-                                label = "Select your origin."),
-      destination_ui <-
-        mod_station_selector_ui("station_selector_ui_destination",
-                                label = "Select your destination."),
-      mod_connections_ui("connections_ui")
+      theme = shinythemes::shinytheme("cosmo"),
+      titlePanel("transit"),
+      sidebarLayout(
+        sidebarPanel(
+          mod_station_selector_ui("station_selector_ui_origin",
+                                  label = "Select your origin."),
+          # Re-use the station selector
+          mod_station_selector_ui("station_selector_ui_destination",
+                                  label = "Select your destination.")
+        ),
+        mainPanel(mod_connections_ui("connections_ui"))
+      )
     )
   )
 }

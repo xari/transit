@@ -17,7 +17,7 @@
 mod_connections_ui <- function(id) {
   ns <- NS(id)
 
-  uiOutput(ns("connections"))
+  uiOutput(ns("connections_wrapper"))
 }
 
 # Module Server
@@ -34,24 +34,60 @@ mod_connections_server <-
            destination) {
     ns <- session$ns
 
-    output$connections <-
+    # Get next 4 connections between origin and destination
+    connections <- reactive(get_connections_tibble(origin$station, destination$station))
+
+    # Create module IDs
+    unique_module_ids <-
+      reactive(purrr::map_chr(1:nrow(connections()), ~ paste0("connection_number_", .)))
+
+    output$connections_wrapper <-
       renderUI({
-        get_next_departures(origin$station, destination$station) %>% # Returns a list of connections
-          tibble::rowid_to_column() %>% # Creates rowid column
-          purrr::pmap(function(...) {
-            args <- list(...) # The list of connection details
-
-            # Create a unique ID for each module instance
-            module_unique_id <-
-              stringr::str_c("connection_", args$rowid)
-
-            # Create module UIs using unique ID
-            mod_connection_table_ui(module_unique_id)
-
-            # Call modules using unique ID
-            callModule(mod_connection_table_server,
-                       module_unique_id,
-                       getConnectionTable(args$sections))
-          })
+        purrr::map(ns(unique_module_ids()),
+                   mod_connection_table_ui)
       })
+
+    observe({
+      purrr::pmap(connections(), function(rowid,
+                                          departure,
+                                          arrival,
+                                          duration,
+                                          transfers,
+                                          sections,
+                                          ...) {
+        # Call modules using unique ID
+        callModule(
+          mod_connection_table_server,
+          unique_module_ids()[rowid],
+          # The unique ID
+          list(
+            # Pass connections data to module
+            departure = departure,
+            arrival = arrival,
+            duration = duration,
+            transfers = transfers,
+            sections = getConnectionTablesFromSections(sections)
+          )
+        )
+      })
+    })
+
+    # reactive(connections() %>%
+    #            purrr::pmap(function(...) {
+    #              args <- list(...) # The list of connection details
+    #
+    #              # Call modules using unique ID
+    #              callModule(
+    #                mod_connection_table_server,
+    #                module_unique_id,
+    #                list(
+    #                  # Pass connections data to module
+    #                  departure = args$departure,
+    #                  arrival = args$arrival,
+    #                  duration = args$duration,
+    #                  transfers = args$transfers,
+    #                  sections = sections
+    #                )
+    #              )
+    #            }))
   }
