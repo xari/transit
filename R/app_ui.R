@@ -15,7 +15,7 @@ app_ui <- function() {
           mod_station_selector_ui("station_selector_ui_destination",
                                   label = "Select your destination.")
         ),
-        mainPanel(mod_connections_ui("connections_ui"))
+        mainPanel(mod_connections_wrapper_ui("connections_wrapper"))
       )
     )
   )

@@ -8,8 +8,8 @@ app_server <- function(input, output,session) {
     callModule(mod_station_selector_server,
                "station_selector_ui_destination")
 
-  callModule(mod_connections_server,
-             "connections_ui",
+  callModule(mod_connections_wrapper_server,
+             "connections_wrapper",
              origin, # Pass-down the selectize values
              destination)
 }

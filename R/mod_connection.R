@@ -1,6 +1,6 @@
 # Module UI
 
-#' @title   mod_connection_table_ui and mod_connection_table_server
+#' @title   mod_connection_ui and mod_connection_server
 #' @description  A shiny Module.
 #'
 #' @param id shiny id
@@ -8,35 +8,43 @@
 #' @param output internal
 #' @param session internal
 #'
-#' @rdname mod_connection_table
+#' @rdname mod_connection
 #'
 #' @keywords internal
 #' @export
 #' @importFrom shiny NS tagList
-mod_connection_table_ui <- function(id) {
+mod_connection_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(
-    textOutput(ns("overview")),
-    shinydashboardPlus::accordion(uiOutput(ns("connection")))
-  )
+  div(textOutput(ns("overview")),
+      shinydashboardPlus::accordion(uiOutput(ns("details"))))
 }
 
 # Module Server
 
-#' @rdname mod_connection_table
+#' @rdname mod_connection
 #' @export
 #' @keywords internal
 
-mod_connection_table_server <-
+mod_connection_server <-
   function(input, output, session, data) {
     ns <- session$ns
 
-    output$overview <- renderText(paste(data$departure, data$arrival, data$duration, data$transfers))
+    output$overview <-
+      renderText(
+        paste(
+          data$origin,
+          data$departure,
+          data$destination,
+          data$arrival,
+          data$duration,
+          data$transfers
+        )
+      )
 
-    output$connection <- renderUI(
+    output$details <- renderUI(
       shinydashboardPlus::accordionItem(
-        id = ns("connection"),
+        id = ns("details"),
         title = "Show itinerary",
         color = "danger",
         collapsed = TRUE,
@@ -60,7 +68,7 @@ mod_connection_table_server <-
       )
     )
 
-    # output$connection <- DT::renderDT(
+    # output$details <- DT::renderDT(
     #   data$sections,
     #   rownames = FALSE,
     #   options = list(
