@@ -16,7 +16,7 @@
 mod_connection_ui <- function(id) {
   ns <- NS(id)
 
-  div(textOutput(ns("overview")),
+  div(uiOutput(ns("overview")),
       shinydashboardPlus::accordion(uiOutput(ns("details"))))
 }
 
@@ -31,14 +31,18 @@ mod_connection_server <-
     ns <- session$ns
 
     output$overview <-
-      renderText(
-        paste(
-          data$origin,
-          data$departure,
-          data$destination,
-          data$arrival,
-          data$duration,
-          data$transfers
+      renderUI(
+        div(
+          div(
+            span(data$origin),
+            icon("map-marker-alt"),
+            span(data$destination)
+          ),
+          div(span(data$departure),
+              icon("stopwatch"),
+              span(data$arrival)),
+          div(purrr::map(0:data$transfers, ~ icon("train"))),
+          div(data$duration)
         )
       )
 

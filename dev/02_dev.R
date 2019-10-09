@@ -7,13 +7,22 @@
 
 ## 2.1 Add modules
 ##
-golem::add_module( name = "station_selector" )
-golem::add_module( name = "connections" )
-golem::add_module( name = "connection_table" )
+# golem::add_module( name = "station_selector" )
+# golem::add_module( name = "connections_wrapper" )
+# golem::add_module( name = "connection" )
 
 ## 2.2 Add dependencies
 
 usethis::use_package( "thinkr" ) # To call each time you need a new package
+# usethis::use_package( "shinythemes" )
+# usethis::use_package( "shinydashboardPlus" )
+# usethis::use_package( "dplyr" )
+# usethis::use_package( "purrr" )
+# usethis::use_package( "stringr" )
+# usethis::use_package( "httr" )
+# usethis::use_package( "tibble" )
+# usethis::use_package( "lubridate" )
+# usethis::use_package( "tidyr" )
 
 ## 2.3 Add tests
 
