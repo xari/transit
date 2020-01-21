@@ -38,9 +38,12 @@ mod_connection_server <-
             icon("map-marker-alt"),
             span(data$destination)
           ),
-          div(span(data$departure),
-              icon("stopwatch"),
-              span(data$arrival)),
+          div(
+            span(data$departure),
+            icon("stopwatch"),
+            span(data$arrival)
+          ),
+          # Show one train icon per section
           div(purrr::map(0:data$transfers, ~ icon("train"))),
           div(data$duration)
         )
@@ -59,7 +62,7 @@ mod_connection_server <-
                 class = "card-body",
                 renderTable(
                   data$sections %>%
-                    dplyr::select(-origin_x,-origin_y,-destination_x,-destination_y),
+                    dplyr::select(-origin_x, -origin_y, -destination_x, -destination_y),
                   rownames = FALSE,
                   options = list(
                     info = FALSE,
@@ -71,14 +74,4 @@ mod_connection_server <-
             ))
       )
     )
-
-    # output$details <- DT::renderDT(
-    #   data$sections,
-    #   rownames = FALSE,
-    #   options = list(
-    #     info = FALSE,
-    #     paging = FALSE,
-    #     searching = FALSE
-    #   )
-    # )
   }
