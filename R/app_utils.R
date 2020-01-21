@@ -49,7 +49,16 @@ get_tibble_from_connections <- function(data) {
         ),
         sections = purrr::map(., "sections"),
         transfers = purrr::map_dbl(., "transfers"),
-        duration = purrr::map_chr(., "duration")
+        duration = purrr::map(., ~ {
+          hms <- .x$duration %>%
+            stringr::str_replace("00d", "") %>% # Remove days
+            stringr::str_replace(":00", "") %>% # Remove seconds
+            stringr::str_split(":")
+
+          lubridate::duration(units = "hours",
+                              hour = as.numeric(hms[[1]][1]),
+                              minute = as.numeric(hms[[1]][2]))
+        })
       )
     }
 }
