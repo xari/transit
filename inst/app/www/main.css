@@ -1,0 +1,46 @@
+.trip_planner_wrapper {
+  background: grey;
+}
+
+.trip_planner_wrapper > div {
+  display: flex;
+  justify-content: center;
+}
+
+.selectize-input {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.ui-timepicker-standard a {
+  font-family: monospace;
+}
+
+.ui-timepicker-standard a:hover {
+  background: #eee;
+  border: 1px solid transparent !important;
+}
+
+.ui-timepicker-standard a.ui-state-hover {
+  border-color: transparent;
+}
+
+.datepicker table tr td, .datepicker table tr th {
+  border-radius: 0;
+}
+
+.container > img {
+  width: 100%;
+}
+

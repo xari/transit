@@ -27,7 +27,9 @@ mod_station_selector_ui <-
         labelField = 'name',
         searchField = 'name',
         load = I(getStations)
-      ),
+      )
+    ) %>% tagAppendAttributes(
+      onclick = "$('#date_and_time').removeClass('d-none')"
     )
   }
 
