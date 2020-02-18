@@ -1,15 +1,12 @@
 #' @import shiny
 app_server <- function(input, output,session) {
-  origin <- # Store the selectize value
-    callModule(mod_station_selector_server,
-               "station_selector_ui_origin")
+  trip_details <- callModule(mod_trip_selector_server,
+                             "trip_selector")
 
-  destination <- # Re-use the station selector
-    callModule(mod_station_selector_server,
-               "station_selector_ui_destination")
-
-  callModule(mod_connections_wrapper_server,
-             "connections_wrapper",
-             origin, # Pass-down the selectize values
-             destination)
+  callModule(
+    mod_connections_wrapper_server,
+    "connections_wrapper",
+    trip_details$origin,
+    trip_details$destination
+  )
 }

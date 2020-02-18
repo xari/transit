@@ -18,43 +18,22 @@ app_ui <- function() {
       bootstraplib::bootstrap(),
       titlePanel("transit"),
 
-      # Station selector...
-      div(
-        class = "trip_planner_wrapper container",
-        div(
-          # From
-          mod_station_selector_ui("station_selector_ui_origin",
-                                  label = "Origin"),
-          # To
-          mod_station_selector_ui("station_selector_ui_destination",
-                                  label = "Destination")
-        ),
-        div(
-            id = "date_and_time",
-            class = "d-none",
-            # Day...
-            dateInput("date",
-                      "Date"),
-            # ShinyTime
-            div(
-              class = "form-group shiny-input-container",
-              tags$label(class = "control-label",
-                         "Time"),
-              tags$input(id = "timepicker",
-                         type = "text",
-                         class = "form-control timepicker")
-            )
-        )
-      ),
+      div(class = "container",
+          div(
+            class = "jumbotron",
+            h1(class = "display-4",
+               "Hey!",
+               tags$small("Book your trip.")),
+            p(
+              class = "lead",
+              "This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information."
+            ),
+            tags$hr(class = "my-4"),
+            mod_trip_selector_ui("trip_selector")
+          )),
 
-      div(
-        class = "container",
-        img(src = "https://sbb.imgix.net/content/dam/internet/sharedimages/home/Swisspass-Jugendlicher-Blauband.jpg?crop=focalpoint&fp-x=0.49&fp-y=0.13166666&fp-z=1&w=1967&h=1273&auto=format,compress,cs=tinysrgb&q=30",
-            alt = "Banner image")
-      ),
-
-      # Time table
-      mod_connections_wrapper_ui("connections_wrapper"),
+      div(class = "container",
+          mod_connections_wrapper_ui("connections_wrapper")),
 
       tags$script(src = "www/main.js")
     )

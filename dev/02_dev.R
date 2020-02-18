@@ -10,6 +10,7 @@
 # golem::add_module( name = "station_selector" )
 # golem::add_module( name = "connections_wrapper" )
 # golem::add_module( name = "connection" )
+golem::add_module( name = "trip_selector" )
 
 ## 2.2 Add dependencies
 
