@@ -6,7 +6,6 @@ app_server <- function(input, output,session) {
   callModule(
     mod_connections_wrapper_server,
     "connections_wrapper",
-    trip_details$origin,
-    trip_details$destination
+    trip_details
   )
 }

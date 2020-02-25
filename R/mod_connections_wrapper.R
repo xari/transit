@@ -30,14 +30,15 @@ mod_connections_wrapper_server <-
   function(input,
            output,
            session,
-           origin,
-           destination) {
+           trip_details) {
     ns <- session$ns
 
     # Get the next 4 connections between
     # the origin and destination stations
     connections <-
-      reactive(get_connections_tibble(origin$station, destination$station))
+      reactive({
+        get_connections_tibble(reactiveValuesToList(trip_details))
+      })
 
     # Create a unique ID for each row of
     # the "connections" table

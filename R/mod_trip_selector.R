@@ -16,6 +16,20 @@
 mod_trip_selector_ui <- function(id){
   ns <- NS(id)
 
+  timepicker <- function(id) {
+    div(
+      class = "form-group shiny-input-container",
+      tags$label(class = "control-label",
+                 "Time"),
+      tags$input(
+        id = id,
+        type = "text",
+        class = "form-control timepicker",
+        value = lubridate::now()
+      )
+    )
+  }
+
   div(
     class = "card card-body",
     div(
@@ -30,16 +44,9 @@ mod_trip_selector_ui <- function(id){
     div(
       id = "date_and_time",
       class = "collapse row row-cols-2",
-      dateInput("date",
+      dateInput(ns("date"),
                 "Date"),
-      div(
-        class = "form-group shiny-input-container",
-        tags$label(class = "control-label",
-                   "Time"),
-        tags$input(id = "timepicker",
-                   type = "text",
-                   class = "form-control timepicker")
-      )
+      timepicker("timepicker")
     )
   )
 }
@@ -53,14 +60,31 @@ mod_trip_selector_ui <- function(id){
 mod_trip_selector_server <- function(input, output, session){
   ns <- session$ns
 
-  origin <- # Store the selectize value
+  from <- # Store the selectize value
     callModule(mod_station_selector_server,
                "station_selector_ui_origin")
 
-  destination <- # Re-use the station selector
+  to <- # Re-use the station selector
     callModule(mod_station_selector_server,
                "station_selector_ui_destination")
 
-  list("origin" = origin,
-       "destination" = destination)
+  trip_details <- reactiveValues(
+    "from" = NULL,
+    "to" = NULL,
+    "date" = NULL
+  )
+
+  observeEvent(from$station,
+               trip_details$from <- from$station)
+
+  observeEvent(to$station,
+               trip_details$to <- to$station)
+
+  observeEvent(input$date,
+               trip_details$date <- input$date)
+
+  # observeEvent(input$time,
+  #              trip_details$time <- input$time)
+
+  trip_details
 }
