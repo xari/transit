@@ -13,38 +13,57 @@
 #' @keywords internal
 #' @export
 #' @importFrom shiny NS tagList
-#' @import timepickerInput
+#' @import shinieR
 mod_trip_selector_ui <- function(id){
   ns <- NS(id)
 
-  div(
-    class = "card card-body",
-    div(
-      class = "row row-cols-2",
-      # From
-      mod_station_selector_ui(ns("station_selector_ui_origin"),
-                              label = "Origin"),
-      # To
-      mod_station_selector_ui(ns("station_selector_ui_destination"),
-                              label = "Destination")
-    ),
-    div(
-      id = "date_and_time",
-      class = "collapse row row-cols-2",
-      dateInput(ns("date"),
-                "Date"),
-      div(
-        class = "form-group",
-        tags$label(class = "control-label",
-                   "Time"),
-        timepickerInput(ns("time"),
-                        configuration = list(disableClock = TRUE,
-                                             format = "HH:mm",
-                                             hourPlaceholder = "HH",
-                                             minutePlaceholder = "MM"))
-      )
-    )
-  )
+  tagList(fluidRow(
+    column(4,
+           mod_station_selector_ui(
+             ns("station_selector_ui_origin"),
+             label = "Origin"
+           )),
+    column(4,
+           mod_station_selector_ui(
+             ns("station_selector_ui_destination"),
+             label = "Destination"
+           )),
+    column(4,
+           mod_station_selector_ui(
+             ns("station_selector_ui_via"),
+             label = "Via (optional)"
+           ))
+  ),
+
+  fluidRow(column(4,
+                  dateInput(ns(
+                    "date"
+                  ),
+                  "Date")),
+           column(
+             4,
+             div(
+               class = "form-group",
+               width = "25%",
+               tags$label(class = "control-label",
+                          "Time"),
+               span(
+                 style = "display: flex",
+                 timeInput(
+                   ns("time"),
+                   configuration = list(
+                     disableClock = TRUE,
+                     format = "HH:mm",
+                     hourPlaceholder = "HH",
+                     minutePlaceholder = "MM"
+                   )
+                 ),
+                 "isArrivalTime:",
+                 switchInput(ns("isArrivalTime"))
+               )
+             )
+           ),
+           column(4)))
 }
 
 # Module Server
@@ -56,18 +75,25 @@ mod_trip_selector_ui <- function(id){
 mod_trip_selector_server <- function(input, output, session){
   ns <- session$ns
 
-  from <- # Store the selectize value
+  from <-
     callModule(mod_station_selector_server,
                "station_selector_ui_origin")
 
-  to <- # Re-use the station selector
+  to <-
     callModule(mod_station_selector_server,
                "station_selector_ui_destination")
+
+  via <-
+    callModule(mod_station_selector_server,
+               "station_selector_ui_via")
 
   trip_details <- reactiveValues(
     "from" = NULL,
     "to" = NULL,
-    "date" = NULL
+    "via" = NULL,
+    "date" = NULL,
+    "time" = NULL,
+    "isArrivalTime" = NULL
   )
 
   observeEvent(from$station,
@@ -76,11 +102,17 @@ mod_trip_selector_server <- function(input, output, session){
   observeEvent(to$station,
                trip_details$to <- to$station)
 
+  observeEvent(via$station,
+               trip_details$via <- via$station)
+
   observeEvent(input$date,
                trip_details$date <- input$date)
 
   observeEvent(input$time,
                trip_details$time <- input$time)
+
+  observeEvent(input$isArrivalTime,
+               trip_details$isArrivalTime <- as.numeric(input$isArrivalTime))
 
   trip_details
 }

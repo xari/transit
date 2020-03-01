@@ -16,17 +16,19 @@ app_ui <- function() {
     # List the first level UI elements here
     fluidPage(
       bootstraplib::bootstrap(),
-      titlePanel("transit"),
-
       div(class = "container",
+          titlePanel(span("transit",
+                          class = "title text-right"),
+                     windowTitle = "transit"),
           div(
             class = "jumbotron",
             h1(class = "display-4",
-               "Hey!",
-               tags$small("Book your trip.")),
+               "All aboard!",
+               tags$br(),
+               tags$small("Select your trip below.")),
             p(
               class = "lead",
-              "This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information."
+              "You can choose from any station or stop in Switzerland: train, tram, bus, or boat!"
             ),
             tags$hr(class = "my-4"),
             mod_trip_selector_ui("trip_selector")

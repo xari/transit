@@ -15,7 +15,8 @@
 #' @importFrom shiny NS tagList
 
 mod_station_selector_ui <-
-  function(id, label = "Select a station.") {
+  function(id,
+           label = "Select a station.") {
     ns <- NS(id)
 
     selectizeInput(
@@ -23,13 +24,11 @@ mod_station_selector_ui <-
       label,
       choices = NULL,
       options = list(
-        valueField = 'id',
         labelField = 'name',
+        load = I(getStations),
         searchField = 'name',
-        load = I(getStations)
+        valueField = 'id'
       )
-    ) %>% tagAppendAttributes(
-      onchange = "$('#date_and_time').addClass('show')"
     )
   }
 
