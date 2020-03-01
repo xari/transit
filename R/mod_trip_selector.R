@@ -13,22 +13,9 @@
 #' @keywords internal
 #' @export
 #' @importFrom shiny NS tagList
+#' @import timepickerInput
 mod_trip_selector_ui <- function(id){
   ns <- NS(id)
-
-  timepicker <- function(id) {
-    div(
-      class = "form-group shiny-input-container",
-      tags$label(class = "control-label",
-                 "Time"),
-      tags$input(
-        id = id,
-        type = "text",
-        class = "form-control timepicker",
-        value = lubridate::now()
-      )
-    )
-  }
 
   div(
     class = "card card-body",
@@ -46,7 +33,16 @@ mod_trip_selector_ui <- function(id){
       class = "collapse row row-cols-2",
       dateInput(ns("date"),
                 "Date"),
-      timepicker("timepicker")
+      div(
+        class = "form-group",
+        tags$label(class = "control-label",
+                   "Time"),
+        timepickerInput(ns("time"),
+                        configuration = list(disableClock = TRUE,
+                                             format = "HH:mm",
+                                             hourPlaceholder = "HH",
+                                             minutePlaceholder = "MM"))
+      )
     )
   )
 }
@@ -83,8 +79,8 @@ mod_trip_selector_server <- function(input, output, session){
   observeEvent(input$date,
                trip_details$date <- input$date)
 
-  # observeEvent(input$time,
-  #              trip_details$time <- input$time)
+  observeEvent(input$time,
+               trip_details$time <- input$time)
 
   trip_details
 }

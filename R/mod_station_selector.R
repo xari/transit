@@ -29,7 +29,7 @@ mod_station_selector_ui <-
         load = I(getStations)
       )
     ) %>% tagAppendAttributes(
-      onclick = "$('#date_and_time').addClass('show')"
+      onchange = "$('#date_and_time').addClass('show')"
     )
   }
 
