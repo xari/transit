@@ -16,7 +16,8 @@
 
 mod_station_selector_ui <-
   function(id,
-           label = "Select a station.") {
+           label = "Select a station.",
+           placeholder = NULL) {
     ns <- NS(id)
 
     selectizeInput(
@@ -26,6 +27,7 @@ mod_station_selector_ui <-
       options = list(
         labelField = 'name',
         load = I(getStations),
+        placeholder = placeholder,
         searchField = 'name',
         valueField = 'id'
       )

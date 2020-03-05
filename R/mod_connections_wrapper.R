@@ -37,7 +37,10 @@ mod_connections_wrapper_server <-
     # the origin and destination stations
     connections <-
       reactive({
-        get_connections_tibble(reactiveValuesToList(trip_details))
+        validate(need(trip_details()$from, 'Needs an origin.'),
+                 need(trip_details()$to, 'Needs a destination.'))
+
+        get_connections_tibble(trip_details())
       })
 
     # Create a unique ID for each row of

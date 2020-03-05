@@ -1,3 +1,72 @@
+top_row <- function(ns) {
+  fluidRow(
+    column(
+      4,
+      mod_station_selector_ui(
+        ns("station_selector_ui_origin"),
+        label = "Origin*",
+        placeholder = "Genève, Trembley"
+      )
+    ),
+    column(
+      4,
+      mod_station_selector_ui(
+        ns("station_selector_ui_destination"),
+        label = "Destination*",
+        placeholder = "Basel SBB"
+      )
+    ),
+    column(
+      4,
+      mod_station_selector_ui(ns("station_selector_ui_via"),
+                              label = "Via (optional)",
+                              placeholder = "Bern")
+    )
+  )
+}
+
+time_inputs <- function(ns) {
+  div(
+    class = "form-group shiny-input-container",
+    uiOutput(ns("time_label")),
+    timeInput(
+      ns("time"),
+      configuration = list(
+        disableClock = TRUE,
+        format = "HH:mm",
+        hourPlaceholder = "HH",
+        minutePlaceholder = "MM"
+      )
+    ),
+    switchInput(ns("isArrivalTime"),
+                configuration = list(icons = list(
+                  checked = NULL,
+                  unchecked = NULL
+                )))
+  )
+}
+
+bottom_row <- function(ns) {
+  fluidRow(column(4,
+                  dateInput(ns("date"),
+                            "Date")),
+           column(4,
+                  time_inputs(ns)),
+           column(4,
+                  div(
+                    class = "form-group shiny-input-container",
+                    tags$label(class = "control-label",
+                               "Ready?",
+                               `for` = ns("submit_btn")),
+                    actionButton(
+                      ns("submit_btn"),
+                      label = "Find connection",
+                      icon = icon("search"),
+                      class = "btn-primary",
+                      style = "display: block"
+                    ))))
+}
+
 # Module UI
 
 #' @title   mod_trip_selector_ui and mod_trip_selector_server
@@ -14,56 +83,13 @@
 #' @export
 #' @importFrom shiny NS tagList
 #' @import shinieR
-mod_trip_selector_ui <- function(id){
+mod_trip_selector_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(fluidRow(
-    column(4,
-           mod_station_selector_ui(
-             ns("station_selector_ui_origin"),
-             label = "Origin"
-           )),
-    column(4,
-           mod_station_selector_ui(
-             ns("station_selector_ui_destination"),
-             label = "Destination"
-           )),
-    column(4,
-           mod_station_selector_ui(
-             ns("station_selector_ui_via"),
-             label = "Via (optional)"
-           ))
-  ),
-
-  fluidRow(column(4,
-                  dateInput(ns(
-                    "date"
-                  ),
-                  "Date")),
-           column(
-             4,
-             div(
-               class = "form-group",
-               width = "25%",
-               tags$label(class = "control-label",
-                          "Time"),
-               span(
-                 style = "display: flex",
-                 timeInput(
-                   ns("time"),
-                   configuration = list(
-                     disableClock = TRUE,
-                     format = "HH:mm",
-                     hourPlaceholder = "HH",
-                     minutePlaceholder = "MM"
-                   )
-                 ),
-                 "isArrivalTime:",
-                 switchInput(ns("isArrivalTime"))
-               )
-             )
-           ),
-           column(4)))
+  tagList(
+    top_row(ns),
+    bottom_row(ns)
+  )
 }
 
 # Module Server
@@ -74,6 +100,14 @@ mod_trip_selector_ui <- function(id){
 
 mod_trip_selector_server <- function(input, output, session){
   ns <- session$ns
+
+  output$time_label <- renderUI({
+    label <- ifelse(input$isArrivalTime == 1, "Arriving", "Departing")
+
+    tags$label(class = "control-label",
+               label,
+               `for` = ns("time"))
+  })
 
   from <-
     callModule(mod_station_selector_server,
@@ -87,32 +121,25 @@ mod_trip_selector_server <- function(input, output, session){
     callModule(mod_station_selector_server,
                "station_selector_ui_via")
 
-  trip_details <- reactiveValues(
-    "from" = NULL,
-    "to" = NULL,
-    "via" = NULL,
-    "date" = NULL,
-    "time" = NULL,
-    "isArrivalTime" = NULL
+  observeEvent(input$submit_btn, {
+    req(from$station, 'Needs an origin.',
+        to$station, 'Needs a destination.')
+
+    updateActionButton(session,
+                       "submit_btn",
+                       label = "Update",
+                       icon = icon("redo"))
+  })
+
+  eventReactive(
+    input$submit_btn,
+    list(
+      "from" = isolate(from$station),
+      "to" = isolate(to$station),
+      "via" = isolate(via$station),
+      "date" = isolate(input$date),
+      "time" = isolate(input$time),
+      "isArrivalTime" = isolate(as.numeric(input$isArrivalTime))
+    )
   )
-
-  observeEvent(from$station,
-               trip_details$from <- from$station)
-
-  observeEvent(to$station,
-               trip_details$to <- to$station)
-
-  observeEvent(via$station,
-               trip_details$via <- via$station)
-
-  observeEvent(input$date,
-               trip_details$date <- input$date)
-
-  observeEvent(input$time,
-               trip_details$time <- input$time)
-
-  observeEvent(input$isArrivalTime,
-               trip_details$isArrivalTime <- as.numeric(input$isArrivalTime))
-
-  trip_details
 }
