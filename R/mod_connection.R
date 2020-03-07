@@ -16,15 +16,7 @@
 mod_connection_ui <- function(id) {
   ns <- NS(id)
 
-  div(class = "card",
-      div(
-        class = "card-body",
-        uiOutput(ns("overview")),
-        div(
-          class = "text-center",
-          shinydashboardPlus::accordion(uiOutput(ns("details")))
-        )
-      ))
+  uiOutput(ns("card"))
 }
 
 # Module Server
@@ -34,47 +26,43 @@ mod_connection_ui <- function(id) {
 #' @keywords internal
 
 mod_connection_server <-
-  function(input, output, session, data) {
+  function(input,
+           output,
+           session,
+           origin,
+           departure,
+           destination,
+           arrival,
+           sections,
+           transfers,
+           duration) {
     ns <- session$ns
 
-    output$overview <-
-      renderUI(tagList(
-        h4(
-          class = "text-center",
-          data$origin,
-          icon("stopwatch"),
-          data$departure,
-          " — ",
-          data$destination,
-          data$arrival
-        ),
-        h3(
-          class = "text-center",
-          data$duration,
-          " ",
-          purrr::map(0:data$transfers, ~ icon("train")),
-        )
-      ))
+    # Create a GT to display the sections
+    sections_gt <-
+      sections %>%
+      dplyr::select(-stops) %>%
+      gt::gt() %>%
+      gt::fmt_time(columns = gt::vars(departure, arrival),
+                   time_style = 2)
 
-    output$details <- renderUI(
-      shinydashboardPlus::accordionItem(
-        id = ns("details"),
-        title = "Show itinerary",
-        color = "danger",
-        collapsed = TRUE,
+    output$card <-
+      renderUI({
         div(
-          class = "collapse show",
-          renderTable(
-            data$sections %>%
-              dplyr::select(-origin_x, -origin_y, -destination_x, -destination_y),
-            rownames = FALSE,
-            options = list(
-              info = FALSE,
-              paging = FALSE,
-              searching = FALSE
-            )
+          class = "card",
+          div(
+            class = "card-body",
+            h4(
+              class = "card-title",
+              paste(departure,
+                    "—",
+                    arrival),
+              tags$br(),
+              icon("stopwatch"),
+              duration
+            ),
+            sections_gt
           )
         )
-      )
-    )
+      })
   }

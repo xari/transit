@@ -17,7 +17,10 @@
 mod_connections_wrapper_ui <- function(id) {
   ns <- NS(id)
 
-  uiOutput(ns("connections_wrapper"))
+  fluidRow(
+    col_6(uiOutput(ns("connections_wrapper"))),
+    col_6("Vis goes here")
+  )
 }
 
 # Module Server
@@ -40,7 +43,7 @@ mod_connections_wrapper_server <-
         validate(need(trip_details()$from, 'Needs an origin.'),
                  need(trip_details()$to, 'Needs a destination.'))
 
-        get_connections_tibble(trip_details())
+        get_connections(trip_details())
       })
 
     # Create a unique ID for each row of
@@ -61,22 +64,13 @@ mod_connections_wrapper_server <-
     observe({
       # Call a module for each row of
       # the connections table
-      purrr::pmap(connections(), function(rowid,
-                                          sections,
-                                          ...) {
+      purrr::pmap(connections(), function(rowid, ...) {
         # Call the module using one of
         # the unique IDs created earlier
         callModule(
           mod_connection_server,
           unique_module_ids()[rowid],
-          list(
-            # Create a "sections" tibble from
-            # the sections argument
-            sections = getConnectionTablesFromSections(sections),
-            # Spread the rest of the function
-            # arguments into the list
-            ...
-          )
+          ...
         )
       })
     })
