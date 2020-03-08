@@ -15,9 +15,7 @@ mod_connection_server(
   departure,
   destination,
   arrival,
-  sections,
-  transfers,
-  duration
+  sections
 )
 }
 \arguments{

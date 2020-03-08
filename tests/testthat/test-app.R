@@ -11,4 +11,6 @@ test_that("Connections are returned", {
   connections_tibble <-
     connections_tibble %>%
     dplyr::mutate(sections = create_tibble_from_sections(sections))
+
+
 })

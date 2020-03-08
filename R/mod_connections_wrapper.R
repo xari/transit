@@ -17,10 +17,12 @@
 mod_connections_wrapper_ui <- function(id) {
   ns <- NS(id)
 
-  fluidRow(
-    col_6(uiOutput(ns("connections_wrapper"))),
-    col_6("Vis goes here")
-  )
+  fluidRow(column(5,
+                  uiOutput(ns(
+                    "connections_wrapper"
+                  ))),
+           column(7,
+                  "Vis goes here"))
 }
 
 # Module Server
@@ -37,7 +39,8 @@ mod_connections_wrapper_server <-
     ns <- session$ns
 
     # Get the next 4 connections between
-    # the origin and destination stations
+    # the origin and destination stations.
+    # Returns: a tibble
     connections <-
       reactive({
         validate(need(trip_details()$from, 'Needs an origin.'),
@@ -48,29 +51,33 @@ mod_connections_wrapper_server <-
 
     # Create a unique ID for each row of
     # the "connections" table
+    # Returns: c("connection_number_1",
+    #            "connection_number_2",
+    #            ...)
     unique_module_ids <-
       reactive({
-        purrr::map_chr(1:nrow(connections()), ~ paste0("connection_number_", .))
+        purrr::map_chr(1:nrow(connections()),
+                       ~ paste0("connection_number_", .))
       })
 
     output$connections_wrapper <-
       renderUI({
         # Call the module UI once for each
-        # of the unique IDs created earlier
+        # of the unique IDs created earlier.
         purrr::map(ns(unique_module_ids()),
                    mod_connection_ui)
       })
 
     observe({
-      # Call a module for each row of
-      # the connections table
+      # Call the module server once for each
+      # of the unique IDs created earlier.
       purrr::pmap(connections(), function(rowid, ...) {
         # Call the module using one of
         # the unique IDs created earlier
         callModule(
           mod_connection_server,
           unique_module_ids()[rowid],
-          ...
+          ... # Pass down the rest of the columns
         )
       })
     })

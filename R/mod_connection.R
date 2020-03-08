@@ -24,7 +24,7 @@ mod_connection_ui <- function(id) {
 #' @rdname mod_connection
 #' @export
 #' @keywords internal
-
+#' @import gt
 mod_connection_server <-
   function(input,
            output,
@@ -33,36 +33,27 @@ mod_connection_server <-
            departure,
            destination,
            arrival,
-           sections,
-           transfers,
-           duration) {
+           sections) {
     ns <- session$ns
 
-    # Create a GT to display the sections
+    # Create a GT to display the
+    # sections of each connection.
     sections_gt <-
       sections %>%
       dplyr::select(-stops) %>%
-      gt::gt() %>%
-      gt::fmt_time(columns = gt::vars(departure, arrival),
-                   time_style = 2)
+      gt() %>%
+      fmt_time(columns = vars(departure, arrival),
+               time_style = 2)
 
     output$card <-
       renderUI({
-        div(
-          class = "card",
-          div(
-            class = "card-body",
-            h4(
-              class = "card-title",
-              paste(departure,
-                    "—",
-                    arrival),
-              tags$br(),
-              icon("stopwatch"),
-              duration
-            ),
-            sections_gt
-          )
-        )
+        div(class = "card",
+            div(class = "card-body",
+                h4(
+                  class = "card-title",
+                  icon("stopwatch"),
+                  paste(departure, "—", arrival)
+                ),
+                sections_gt))
       })
   }

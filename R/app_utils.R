@@ -74,18 +74,7 @@ create_tibble_from_api_response <- function(data) {
           .,
           ~ lubridate::ymd_hms(.x$to$arrival, tz = "Europe/Berlin") %>% format("%H:%M")
         ),
-        sections = purrr::map(., "sections"),
-        transfers = purrr::map_dbl(., "transfers"),
-        duration = purrr::map(., ~ {
-          hms <- .x$duration %>%
-            stringr::str_remove("00d") %>% # Remove days
-            stringr::str_remove(":00") %>% # Remove seconds
-            stringr::str_split(":")
-
-          lubridate::duration(units = "hours",
-                              hour = as.numeric(hms[[1]][1]),
-                              minute = as.numeric(hms[[1]][2]))
-        })
+        sections = purrr::map(., "sections")
       ) %>%
         tibble::rowid_to_column() # Creates rowid column
     }
