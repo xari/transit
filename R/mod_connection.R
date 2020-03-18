@@ -36,24 +36,17 @@ mod_connection_server <-
            sections) {
     ns <- session$ns
 
-    # Create a GT to display the
-    # sections of each connection.
-    sections_gt <-
-      sections %>%
-      dplyr::select(-stops) %>%
-      gt() %>%
-      fmt_time(columns = vars(departure, arrival),
-               time_style = 2)
-
     output$card <-
       renderUI({
         div(class = "card",
-            div(class = "card-body",
-                h4(
-                  class = "card-title",
-                  icon("stopwatch"),
-                  paste(departure, "—", arrival)
-                ),
-                sections_gt))
+            actionButton(
+              inputId = ns("is_selected"),
+              label = h4(class = "card-title",
+                         icon("stopwatch"),
+                         paste(departure, "—", arrival)),
+              class = "card-body"
+            ))
       })
+
+    input
   }

@@ -17,12 +17,9 @@
 mod_connections_wrapper_ui <- function(id) {
   ns <- NS(id)
 
-  fluidRow(column(5,
-                  uiOutput(ns(
-                    "connections_wrapper"
-                  ))),
-           column(7,
-                  "Vis goes here"))
+  uiOutput(ns(
+    "connections_wrapper"
+  ))
 }
 
 # Module Server
@@ -68,17 +65,33 @@ mod_connections_wrapper_server <-
                    mod_connection_ui)
       })
 
+    selected_connection <- reactiveVal(NULL)
+
     observe({
       # Call the module server once for each
       # of the unique IDs created earlier.
       purrr::pmap(connections(), function(rowid, ...) {
         # Call the module using one of
         # the unique IDs created earlier
-        callModule(
+        is_selected <- callModule(
           mod_connection_server,
           unique_module_ids()[rowid],
           ... # Pass down the rest of the columns
         )
+
+        # Attach a click event listener
+        # to each actionButton
+        observeEvent(is_selected$is_selected, {
+          # Update to selected connection
+          selected_connection(rowid)
+        })
       })
     })
+
+    # Return the connections table
+    # and the index of the selected connection
+    list(
+      connections = connections,
+      selected_connection = selected_connection
+    )
   }

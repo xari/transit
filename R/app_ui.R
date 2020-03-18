@@ -35,7 +35,11 @@ app_ui <- function() {
           )),
 
       div(class = "container",
-          mod_connections_wrapper_ui("connections_wrapper")),
+          fluidRow(column(5,
+                          mod_connections_wrapper_ui("connections_wrapper")),
+                   column(7,
+                          mod_details_wrapper_ui("details_wrapper")))
+      )
     )
   )
 }
