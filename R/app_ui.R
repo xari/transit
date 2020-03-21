@@ -45,7 +45,7 @@ app_ui <- function() {
 }
 
 sass::sass(
-  sass::sass_file("scss/selectize.scss"),
+  sass::sass_file("scss/main.scss"),
   output = "inst/app/www/main.css"
 )
 

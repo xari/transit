@@ -56,3 +56,11 @@
   margin-bottom: 5px;
 }
 
+.gt_col_headings tr:last-child {
+  display: none;
+}
+
+.gt_column_spanner {
+  border: none !important;
+}
+

@@ -83,12 +83,15 @@ create_tibble_from_api_response <- function(data) {
 create_tibble_from_stops <- function(stops) {
   purrr::map_dfr(
     stops,
-    ~ tidyr::tibble(
-      station = .$location$name,
-      x = .$location$coordinate$x,
-      y = .$location$coordinate$y,
-      type = .$location$coordinate$type
-    )
+    ~
+    ifelse(!is.na(.),
+           tidyr::tibble(
+             station = .$location$name,
+             x = .$location$coordinate$x,
+             y = .$location$coordinate$y,
+             type = .$location$coordinate$type
+           ),
+           NA)
   )
 }
 
@@ -102,7 +105,12 @@ create_tibble_from_sections <- function(sections) {
                    departure = lubridate::ymd_hms(.$departure$departure, tz = "Europe/Berlin") %>% format("%H:%M"),
                    destination = .$arrival$station$name,
                    arrival = lubridate::ymd_hms(.$arrival$arrival, tz = "Europe/Berlin") %>% format("%H:%M"),
-                   stops = list(stops = create_tibble_from_stops(.$journey$passList))
+                   category = ifelse(!is.null(.$journey), .$journey$category, NA),
+                   number = ifelse(!is.null(.$journey), .$journey$number, NA),
+                   walk = ifelse(!is.null(.$walk), .$walk$duration, NA),
+                   stops = ifelse(!is.null(.$journey),
+                                  list(stops = create_tibble_from_stops(.$journey$passList)),
+                                  list(stops = NA))
                  )
              ))
 }
