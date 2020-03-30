@@ -1,27 +1,3 @@
-getStations <- "function(query, callback) {
-  if (!query.length) return callback();
-
-  fetch('http://transport.opendata.ch/v1/locations?query='+encodeURIComponent(query)+'&limit=10')
-    .then(function(response) {
-      return response.json();
-  })
-    .then(function(responseJSON) {
-      callback(responseJSON.stations.map(station => ({
-        id: station.id,
-        name: station.name
-      })));
-  });
-}"
-
-get_locations <- function(search_string) {
-  httr::GET(
-    stringr::str_interp(
-      "http://transport.opendata.ch/v1/locations?query=${search_string}"
-    )
-  ) %>%
-    httr::content(as = "parsed") %>%
-    purrr::pluck("stations")
-}
 
 create_url_from_args <- function(from, # required 	Specifies the departure location of the connection 	Lausanne
                                  to, # required 	Specifies the arrival location of the connection 	Genève
@@ -84,14 +60,11 @@ create_tibble_from_stops <- function(stops) {
   purrr::map_dfr(
     stops,
     ~
-    ifelse(!is.na(.),
-           tidyr::tibble(
-             station = .$location$name,
-             x = .$location$coordinate$x,
-             y = .$location$coordinate$y,
-             type = .$location$coordinate$type
-           ),
-           NA)
+      tidyr::tibble(
+        station = .$location$name,
+        x = .$location$coordinate$x,
+        y = .$location$coordinate$y
+      )
   )
 }
 

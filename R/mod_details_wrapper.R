@@ -16,7 +16,8 @@
 mod_details_wrapper_ui <- function(id){
   ns <- NS(id)
   tagList(
-    gt::gt_output(ns("trip_gt"))
+    gt::gt_output(ns("trip_gt")),
+    plotOutput(ns("map"))
   )
 }
 
@@ -91,4 +92,35 @@ mod_details_wrapper_server <- function(input, output, session, connections){
                time_style = 2) %>%
       opt_row_striping()
   })
+
+
+  # stops <- reactive({
+  #   connections$connections() %>%
+  #     tidyr::hoist(sections, stops = "stops") %>%
+  #     dplyr::select(rowid, stops) %>%
+  #     tidyr::unnest_longer("stops") %>%
+  #     tidyr::unnest(cols = c(stops)) %>%
+  #     dplyr::select(-stops) %>%
+  #     tidyr::drop_na() %>%
+  #     tidyr::nest(stops = c("station", "x", "y")) %>%
+  #     dplyr::slice(connections$selected_connection()) %>%
+  #     tidyr::unnest(stops)
+  # })
+  #
+  # output$map <- renderPlot({
+  #   print(stops())
+  #
+  #   stops() %>%
+  #     {
+  #       ggmap::qmplot(
+  #         geom = "line",
+  #         x = y,
+  #         y = x,
+  #         data = .,
+  #         maptype = "toner-lines",
+  #         source = "osm",
+  #         color = I("red")
+  #       )
+  #     }
+  # })
 }
