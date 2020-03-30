@@ -50,11 +50,7 @@ let get_stations = new Promise((resolve, reject) => {
   )
 });
 
-get_stations.then(stations => {
-      console.log(callback)
-
-      callback(stations)
-});
+get_stations.then(stations => callback(stations));
 
 if (query.length > 0) {
   Shiny.setInputValue('${ns('station')}', query);
@@ -83,17 +79,10 @@ mod_station_selector_server <-
     observeEvent(
       input$station,
       ignoreInit = TRUE,
-      {
-        stations %>%
-          dplyr::filter(stringr::str_detect(tolower(label), tolower(input$station))) %>%
-          head(10) %>%
-          print()
-
-        session$sendCustomMessage(ns("station"),
-                                  stations %>%
-                                    dplyr::filter(stringr::str_detect(tolower(label), tolower(input$station))) %>%
-                                    head(10))
-      }
+      session$sendCustomMessage(ns("station"),
+                                stations %>%
+                                  dplyr::filter(stringr::str_detect(tolower(label), tolower(input$station))) %>%
+                                  head(10))
     )
 
     input
