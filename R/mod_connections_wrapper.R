@@ -43,6 +43,8 @@ mod_connections_wrapper_server <-
         validate(need(trip_details()$from, 'Needs an origin.'),
                  need(trip_details()$to, 'Needs a destination.'))
 
+        print(trip_details())
+
         get_connections(trip_details())
       })
 

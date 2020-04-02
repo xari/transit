@@ -15,6 +15,7 @@ app_ui <- function() {
     golem_add_external_resources(),
     # List the first level UI elements here
     fluidPage(
+      class = "content",
       bootstraplib::bootstrap(),
       div(class = "container",
           titlePanel(span("transit",
@@ -39,6 +40,19 @@ app_ui <- function() {
                           mod_connections_wrapper_ui("connections_wrapper")),
                    column(7,
                           mod_details_wrapper_ui("details_wrapper")))
+      )
+    ),
+    tags$footer(
+      div(
+        class = "container",
+        p(
+          class = "mb-4",
+          "This app was built by TeamR at the",
+          a(href = "https://www.extensionschool.ch/", "EPFL Extension School.", target = "_blank"),
+          tags$br(),
+          "We'd like to say a special thank you the maintainers of"
+        ),
+        uiOutput("footer_logos")
       )
     )
   )

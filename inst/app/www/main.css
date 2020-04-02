@@ -1,3 +1,20 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
 .title {
   display: block;
 }
@@ -62,5 +79,32 @@
 
 .gt_column_spanner {
   border: none !important;
+}
+
+footer {
+  background: #e5e5e5;
+  color: #444;
+}
+
+footer > .container {
+  padding: 4rem calc(2rem + 15px);
+}
+
+[class^='react-time-picker__'], [class*=' react-time-picker__'] {
+  color: #495057;
+  stroke: #495057;
+}
+
+.footer-text {
+  padding: 0 0 2.07143em;
+}
+
+.package_logos_wrapper {
+  display: flex;
+  margin: 0 -8px;
+}
+
+.package_logos_wrapper > .shiny-image-output {
+  padding: 0 8px;
 }
 

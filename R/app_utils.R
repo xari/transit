@@ -95,3 +95,87 @@ get_connections <- function(trip_details) {
     create_tibble_from_api_response() %>%
     dplyr::mutate(sections = create_tibble_from_sections(sections))
 }
+
+format_data_for_gt <- function(selected_connection) {
+  selected_connection %>%
+    purrr::pluck("sections") %>%
+    dplyr::first() %>%
+    dplyr::select(-stops) %>%
+    dplyr::mutate(
+      walk = ifelse(!is.na(walk),
+                    paste(walk / 60, "minute walk"),
+                    NA),
+      product = paste(category, number),
+      description = ifelse(is.na(walk),
+                           product,
+                           walk)
+    ) %>%
+    dplyr::select(-category, -number, -walk,-product)
+}
+
+#' Create a GT to display the sections for each connection
+#'
+#' @param data
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_gt <- function(selected_connection, title, subtitle) {
+  selected_connection %>%
+    gt() %>%
+    tab_options(container.width = pct(100),
+                table.width = pct(100)) %>%
+    tab_header(title = title,
+               subtitle = subtitle) %>%
+    tab_spanner(label = "Departing",
+                columns = vars(origin, departure)) %>%
+    tab_spanner(label = "Arriving",
+                columns = vars(destination, arrival)) %>%
+    cols_move_to_end(columns = vars(origin, departure, arrival, destination)) %>%
+    cols_label(
+      origin = "",
+      departure = "",
+      destination = "",
+      arrival = "",
+      description = ""
+    ) %>%
+    fmt_time(columns = vars(departure, arrival),
+             time_style = 2) %>%
+    opt_row_striping()
+}
+
+hoist_stops_from_connections <- function(connections) {
+  connections %>%
+    tidyr::hoist(sections, stops = "stops") %>%
+    dplyr::select(rowid, stops) %>%
+    tidyr::unnest_longer("stops") %>%
+    tidyr::unnest(cols = c(stops)) %>%
+    # dplyr::select(-stops) %>%
+    tidyr::drop_na()
+}
+
+get_map <- function(data, selected_connection) {
+  selected_connection <-
+    data %>%
+    dplyr::filter(rowid == selected_connection)
+
+  ggmap::qmplot(
+    geom = "line",
+    x = y,
+    y = x,
+    data = data,
+    maptype = "toner-lite",
+    # force = TRUE,
+    color = I("#8c8c8c")
+  ) +
+    {
+      ggplot2::geom_line(
+        data = selected_connection,
+        ggplot2::aes(x = y,
+                     y = x),
+        color = "#d30a09"
+      )
+    } +
+    ggplot2::theme(legend.position = "none")
+}

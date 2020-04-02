@@ -28,34 +28,34 @@ mod_station_selector_ui <-
         load = I(
           stringr::str_interp(
             "function(query, callback) {
-if (!query.length) return callback();
+  if (!query.length) return callback();
 
-let get_stations = new Promise((resolve, reject) => {
-  Shiny.addCustomMessageHandler(
-    '${ns('station')}',
-    stations => {
-      const stations_arr = [];
+  let get_stations = new Promise((resolve, reject) => {
+    Shiny.addCustomMessageHandler(
+      '${ns('station')}',
+      stations => {
+        const stations_arr = [];
 
-      let i;
+        let i;
 
-      for(i = 0; i < 10; i++) {
-        stations_arr.push({
-          id: stations.value[i],
-          name: stations.label[i]
-        });
+        for(i = 0; i < 10; i++) {
+          stations_arr.push({
+            id: stations.value[i],
+            name: stations.label[i]
+          });
+        }
+
+        resolve(stations_arr);
       }
+    )
+  });
 
-      resolve(stations_arr);
-    }
-  )
-});
+  get_stations.then(stations => callback(stations));
 
-get_stations.then(stations => callback(stations));
-
-if (query.length > 0) {
-  Shiny.setInputValue('${ns('station')}', query);
-}
-            }"
+  if (query.length > 0) {
+    Shiny.setInputValue('${ns('station')}', query);
+  }
+}"
           )
         ),
         labelField = 'name',
