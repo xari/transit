@@ -71,8 +71,20 @@ footer {
     0px 3px 6px rgba(0, 0, 0, 0.23);
 }
 
+.trip_view_wrapper {
+  padding-bottom: 4rem;
+}
+
+.tab-content {
+  padding: 1rem 0;
+}
+
 .card {
   margin-bottom: 5px;
+}
+
+.gt_table {
+  border-top: none !important;
 }
 
 .gt_col_headings tr:last-child {

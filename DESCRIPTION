@@ -15,7 +15,6 @@ Imports:
     glue,
     htmltools,
     shinythemes,
-    shinydashboardPlus,
     dplyr,
     purrr,
     stringr,
@@ -26,7 +25,7 @@ Imports:
     sass,
     bootstraplib,
     urltools,
-    shinieR,
+    shinieR (>= 0.0.0.9002),
     ggmap,
     pkgload,
     gt
@@ -35,3 +34,5 @@ URL: https://github.com/epfl-exts/transit.git
 BugReports: https://github.com/epfl-exts/transit.git/issues
 Suggests: 
     testthat (>= 2.1.0)
+Remotes:  
+    xari/shinieR

@@ -9,15 +9,15 @@
 ##
 # golem::add_module( name = "station_selector" )
 # golem::add_module( name = "connections_wrapper" )
+golem::add_module( name = "details_wrapper" )
 # golem::add_module( name = "connection" )
 # golem::add_module( name = "trip_selector" )
-golem::add_module( name = "date_and-time_inputs" )
+# golem::add_module( name = "date_and-time_inputs" )
 
 ## 2.2 Add dependencies
 
 usethis::use_package( "thinkr" ) # To call each time you need a new package
 # usethis::use_package( "shinythemes" )
-# usethis::use_package( "shinydashboardPlus" )
 # usethis::use_package( "dplyr" )
 # usethis::use_package( "purrr" )
 # usethis::use_package( "stringr" )

@@ -3,15 +3,9 @@ app_server <- function(input, output,session) {
   trip_details <- callModule(mod_trip_selector_server,
                              "trip_selector")
 
-  # Returns the connections table
-  # along with the index of the selected connection
-  connections <- callModule(mod_connections_wrapper_server,
-             "connections_wrapper",
-             trip_details)
-
   callModule(mod_details_wrapper_server,
              "details_wrapper",
-             connections)
+             trip_details)
 
   # Dynamically render logos for the following packages.
   package_names <- c("shiny", "golem", "tidyverse")
@@ -19,7 +13,7 @@ app_server <- function(input, output,session) {
   package_logos <-
     purrr::map(package_names,
                ~ {
-                 # First attach a new "render" to the outputs object:
+                 # First attach a new "render" to the output object:
                  output[[.]] <-
                    renderImage(
                      list(

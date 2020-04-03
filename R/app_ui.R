@@ -34,13 +34,7 @@ app_ui <- function() {
             tags$hr(class = "my-4"),
             mod_trip_selector_ui("trip_selector")
           )),
-
-      div(class = "container",
-          fluidRow(column(5,
-                          mod_connections_wrapper_ui("connections_wrapper")),
-                   column(7,
-                          mod_details_wrapper_ui("details_wrapper")))
-      )
+        mod_details_wrapper_ui("details_wrapper")
     ),
     tags$footer(
       div(

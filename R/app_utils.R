@@ -1,3 +1,13 @@
+get_stations_beginning_with <- function(search_string) {
+  stringr::str_interp("http://transport.opendata.ch/v1/locations?query=${search_string}&limit=10") %>%
+    httr::GET() %>%
+    httr::content(as = "parsed") %>%
+    purrr::pluck("stations") %>%
+    purrr::map_dfr(~ list(
+      value = .$id,
+      label = .$name
+    ))
+}
 
 create_url_from_args <- function(from, # required 	Specifies the departure location of the connection 	Lausanne
                                  to, # required 	Specifies the arrival location of the connection 	Genève
@@ -145,37 +155,28 @@ get_gt <- function(selected_connection, title, subtitle) {
     opt_row_striping()
 }
 
-hoist_stops_from_connections <- function(connections) {
+hoist_stops_from_connections <- function(connections, selected_connection) {
   connections %>%
     tidyr::hoist(sections, stops = "stops") %>%
     dplyr::select(rowid, stops) %>%
     tidyr::unnest_longer("stops") %>%
     tidyr::unnest(cols = c(stops)) %>%
     # dplyr::select(-stops) %>%
+    dplyr::filter(rowid == selected_connection) %>%
     tidyr::drop_na()
 }
 
-get_map <- function(data, selected_connection) {
-  selected_connection <-
-    data %>%
-    dplyr::filter(rowid == selected_connection)
-
+get_map <- function(data) {
   ggmap::qmplot(
-    geom = "line",
+    geom = "point",
     x = y,
     y = x,
     data = data,
     maptype = "toner-lite",
     # force = TRUE,
-    color = I("#8c8c8c")
+    color = I("#d30a09"),
+    size = 1
   ) +
-    {
-      ggplot2::geom_line(
-        data = selected_connection,
-        ggplot2::aes(x = y,
-                     y = x),
-        color = "#d30a09"
-      )
-    } +
+    ggplot2::geom_line(linetype = 5, size = .8) +
     ggplot2::theme(legend.position = "none")
 }
