@@ -121,3 +121,16 @@ footer > .container {
 .package_logos_wrapper > .shiny-image-output {
    padding: 0 8px;
 }
+
+.switch-label {
+  margin-bottom: 0;
+}
+
+.switch {
+  width: auto;
+  margin: 0 5px;
+}
+
+.switch-container .shiny-input-container:not(.time) {
+  align-items: center;
+}

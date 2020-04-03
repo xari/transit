@@ -5,7 +5,7 @@ top_row <- function(ns) {
       mod_station_selector_ui(
         ns("station_selector_ui_origin"),
         label = "Origin*",
-        placeholder = "Genève, Trembley"
+        placeholder = "Nyon"
       )
     ),
     column(
@@ -27,8 +27,8 @@ top_row <- function(ns) {
 
 time_inputs <- function(ns) {
   div(
-    class = "form-group shiny-input-container",
-    uiOutput(ns("time_label")),
+    class = "form-group shiny-input-container switch-container",
+    "Time",
     timeInput(
       ns("time"),
       configuration = list(
@@ -39,6 +39,7 @@ time_inputs <- function(ns) {
       )
     ),
     switchInput(ns("isArrivalTime"),
+                c("Departing", "Arriving"),
                 configuration = list(icons = list(
                   checked = NULL,
                   unchecked = NULL
@@ -100,14 +101,6 @@ mod_trip_selector_ui <- function(id) {
 
 mod_trip_selector_server <- function(input, output, session){
   ns <- session$ns
-
-  output$time_label <- renderUI({
-    label <- ifelse(input$isArrivalTime == 1, "Arriving", "Departing")
-
-    tags$label(class = "control-label",
-               label,
-               `for` = ns("time"))
-  })
 
   from <-
     callModule(mod_station_selector_server,
