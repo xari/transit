@@ -73,26 +73,28 @@ mod_station_selector_ui <-
 #' @keywords internal
 
 mod_station_selector_server <-
-  function(input, output, session) {
-    ns <- session$ns
+  function(id) {
+    moduleServer(id, function(input, output, session) {
+      ns <- session$ns
 
-    station_input <- reactive({
-      input$station
+      station_input <- reactive({
+        input$station
+      })
+
+      station_d <- debounce(station_input, 800)
+
+      observeEvent(
+        input$station,
+        ignoreInit = TRUE,
+        session$sendCustomMessage(ns("station"),
+                                  get_stations_beginning_with(station_d())
+                                  # Can also be done using static RDS
+                                  # stations %>%
+                                  #   dplyr::filter(stringr::str_detect(tolower(label), tolower(input$station))) %>%
+                                  #   head(10)
+                                  )
+        )
+
+        input
     })
-
-    station_d <- debounce(station_input, 800)
-
-    observeEvent(
-      input$station,
-      ignoreInit = TRUE,
-      session$sendCustomMessage(ns("station"),
-                                get_stations_beginning_with(station_d())
-                                # Can also be done using static RDS
-                                # stations %>%
-                                #   dplyr::filter(stringr::str_detect(tolower(label), tolower(input$station))) %>%
-                                #   head(10)
-                                )
-    )
-
-    input
   }

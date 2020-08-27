@@ -99,40 +99,41 @@ mod_trip_selector_ui <- function(id) {
 #' @export
 #' @keywords internal
 
-mod_trip_selector_server <- function(input, output, session){
-  ns <- session$ns
+mod_trip_selector_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    ns <- session$ns
 
-  from <-
-    callModule(mod_station_selector_server,
-               "station_selector_ui_origin")
+    from <-
+      mod_station_selector_server("station_selector_ui_origin")
 
-  to <-
-    callModule(mod_station_selector_server,
-               "station_selector_ui_destination")
+    to <-
+      mod_station_selector_server("station_selector_ui_destination")
 
-  via <-
-    callModule(mod_station_selector_server,
-               "station_selector_ui_via")
+    via <-
+      mod_station_selector_server("station_selector_ui_via")
 
-  observeEvent(input$submit_btn, {
-    req(from$station, 'Needs an origin.',
-        to$station, 'Needs a destination.')
+    observeEvent(input$submit_btn, {
+      req(from$station,
+          'Needs an origin.',
+          to$station,
+          'Needs a destination.')
 
-    updateActionButton(session,
-                       "submit_btn",
-                       label = "Update",
-                       icon = icon("redo"))
-  })
+      updateActionButton(session,
+                         "submit_btn",
+                         label = "Update",
+                         icon = icon("redo"))
+    })
 
-  eventReactive(
-    input$submit_btn,
-    list(
-      "from" = isolate(from$station),
-      "to" = isolate(to$station),
-      "via" = isolate(via$station),
-      "date" = isolate(input$date),
-      "time" = isolate(input$time),
-      "isArrivalTime" = isolate(as.numeric(input$isArrivalTime))
+    eventReactive(
+      input$submit_btn,
+      list(
+        "from" = isolate(from$station),
+        "to" = isolate(to$station),
+        "via" = isolate(via$station),
+        "date" = isolate(input$date),
+        "time" = isolate(input$time),
+        "isArrivalTime" = isolate(as.numeric(input$isArrivalTime))
+      )
     )
-  )
+  })
 }

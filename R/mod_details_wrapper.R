@@ -43,60 +43,61 @@ mod_details_wrapper_ui <- function(id) {
 #' @export
 #' @keywords internal
 
-mod_details_wrapper_server <- function(input, output, session, trip_details){
-  ns <- session$ns
+mod_details_wrapper_server <- function(id, trip_details){
+	moduleServer(id, function(input, output, session) {
+			     ns <- session$ns
 
-  # Returns the connections table
-  # along with the index of the selected connection
-  connections <- callModule(mod_connections_wrapper_server,
-                            "connections_wrapper",
-                            trip_details)
+			     # Returns the connections table
+			     # along with the index of the selected connection
+			     connections <- mod_connections_wrapper_server("connections_wrapper",
+									   trip_details)
 
-  observe({
-    req(connections$connections())
+			     observe({
+				     req(connections$connections())
 
-    removeUI("#helper-text p")
+				     removeUI("#helper-text p")
 
-    insertUI("#helper-text",
-             "afterBegin",
-             p(class = "lead",
-               "Bon voyage!"))
-  })
+				     insertUI("#helper-text",
+					      "afterBegin",
+					      p(class = "lead",
+						"Bon voyage!"))
+			     })
 
-  output$trip_gt <- gt::render_gt({
-    validate(need(!is.na(connections$selected_connection()),
-                  "Please select a connections."))
+			     output$trip_gt <- gt::render_gt({
+				     validate(need(!is.na(connections$selected_connection()),
+						   "Please select a connections."))
 
-    unique_connection <-
-      connections$connections() %>%
-      dplyr::slice(connections$selected_connection())
+				     unique_connection <-
+					     connections$connections() %>%
+					     dplyr::slice(connections$selected_connection())
 
-    title <- paste(
-      unique_connection %>%
-        purrr::pluck("origin"),
-      "—",
-      unique_connection %>%
-        purrr::pluck("destination")
-    )
+				     title <- paste(
+						    unique_connection %>%
+							    purrr::pluck("origin"),
+						    "—",
+						    unique_connection %>%
+							    purrr::pluck("destination")
+				     )
 
-    subtitle <- paste(
-      unique_connection %>%
-        purrr::pluck("departure"),
-      "—",
-      unique_connection %>%
-        purrr::pluck("arrival")
-    )
+				     subtitle <- paste(
+						       unique_connection %>%
+							       purrr::pluck("departure"),
+						       "—",
+						       unique_connection %>%
+							       purrr::pluck("arrival")
+				     )
 
-    format_data_for_gt(unique_connection) %>%
-      get_gt(title, subtitle)
-  })
+				     format_data_for_gt(unique_connection) %>%
+					     get_gt(title, subtitle)
+			     })
 
-  output$map <- renderPlot({
-    validate(need(connections$selected_connection(),
-                  "Please select one of the connections."))
+			     output$map <- renderPlot({
+				     validate(need(connections$selected_connection(),
+						   "Please select one of the connections."))
 
-    hoist_stops_from_connections(connections$connections(),
-                                 connections$selected_connection()) %>%
-      get_map()
-  })
+				     hoist_stops_from_connections(connections$connections(),
+								  connections$selected_connection()) %>%
+				     get_map()
+			     })
+      })
 }

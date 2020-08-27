@@ -1,11 +1,10 @@
 #' @import shiny
 app_server <- function(input, output,session) {
-  trip_details <- callModule(mod_trip_selector_server,
-                             "trip_selector")
+  trip_details <- mod_trip_selector_server("trip_selector")
 
-  callModule(mod_details_wrapper_server,
-             "details_wrapper",
-             trip_details)
+  mod_details_wrapper_server(
+			     "details_wrapper",
+			     trip_details)
 
   # Dynamically render logos for the following packages.
   package_names <- c("shiny", "golem", "tidyverse")

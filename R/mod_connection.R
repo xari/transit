@@ -26,27 +26,31 @@ mod_connection_ui <- function(id) {
 #' @keywords internal
 #' @import gt
 mod_connection_server <-
-  function(input,
-           output,
-           session,
-           origin,
-           departure,
-           destination,
-           arrival,
-           sections) {
-    ns <- session$ns
+  function(id) {
+    moduleServer(id, function(input,
+                              output,
+                              session,
+                              origin,
+                              departure,
+                              destination,
+                              arrival,
+                              sections) {
+      ns <- session$ns
 
-    output$card <-
-      renderUI({
-        div(class = "card",
-            actionButton(
-              inputId = ns("is_selected"),
-              label = h4(class = "card-title",
-                         icon("stopwatch"),
-                         paste(departure, "—", arrival)),
-              class = "card-body"
-            ))
-      })
+      output$card <-
+        renderUI({
+          div(class = "card",
+              actionButton(
+                inputId = ns("is_selected"),
+                label = h4(
+                  class = "card-title",
+                  icon("stopwatch"),
+                  paste(departure, "—", arrival)
+                ),
+                class = "card-body"
+              ))
+        })
 
-    input
+      input
+    })
   }
