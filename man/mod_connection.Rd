@@ -7,16 +7,7 @@
 \usage{
 mod_connection_ui(id)
 
-mod_connection_server(
-  input,
-  output,
-  session,
-  origin,
-  departure,
-  destination,
-  arrival,
-  sections
-)
+mod_connection_server(id, origin, departure, destination, arrival, sections)
 }
 \arguments{
 \item{id}{shiny id}

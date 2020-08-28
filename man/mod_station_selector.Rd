@@ -7,7 +7,7 @@
 \usage{
 mod_station_selector_ui(id, label = "Select a station.", placeholder = NULL)
 
-mod_station_selector_server(input, output, session)
+mod_station_selector_server(id)
 }
 \arguments{
 \item{id}{shiny id}

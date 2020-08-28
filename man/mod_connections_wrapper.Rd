@@ -7,7 +7,7 @@
 \usage{
 mod_connections_wrapper_ui(id)
 
-mod_connections_wrapper_server(input, output, session, trip_details)
+mod_connections_wrapper_server(id, trip_details)
 }
 \arguments{
 \item{id}{shiny id}

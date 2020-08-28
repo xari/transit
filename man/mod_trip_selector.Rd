@@ -7,7 +7,7 @@
 \usage{
 mod_trip_selector_ui(id)
 
-mod_trip_selector_server(input, output, session)
+mod_trip_selector_server(id)
 }
 \arguments{
 \item{id}{shiny id}
