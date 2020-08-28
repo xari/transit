@@ -65,7 +65,7 @@ mod_details_wrapper_server <- function(id, trip_details){
 
 			     output$trip_gt <- gt::render_gt({
 				     validate(need(!is.na(connections$selected_connection()),
-						   "Please select a connections."))
+						   "Please select a connection."))
 
 				     unique_connection <-
 					     connections$connections() %>%
