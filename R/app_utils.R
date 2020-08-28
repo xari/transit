@@ -90,7 +90,7 @@ create_tibble_from_sections <- function(sections) {
                    arrival = lubridate::ymd_hms(.$arrival$arrival, tz = "Europe/Berlin") %>% format("%H:%M"),
                    category = ifelse(!is.null(.$journey), .$journey$category, NA),
                    number = ifelse(!is.null(.$journey), .$journey$number, NA),
-                   walk = ifelse(!is.null(.$walk), .$walk$duration, NA),
+                   walk = ifelse(!is.null(.$walk), ifelse(!is.null(.$walk$duration), .$walk$duration, NA), NA),
                    stops = ifelse(!is.null(.$journey),
                                   list(stops = create_tibble_from_stops(.$journey$passList)),
                                   list(stops = NA))

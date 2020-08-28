@@ -26,15 +26,15 @@ mod_connection_ui <- function(id) {
 #' @keywords internal
 #' @import gt
 mod_connection_server <-
-  function(id) {
+  function(id,
+           origin,
+           departure,
+           destination,
+           arrival,
+           sections) {
     moduleServer(id, function(input,
                               output,
-                              session,
-                              origin,
-                              departure,
-                              destination,
-                              arrival,
-                              sections) {
+                              session) {
       ns <- session$ns
 
       output$card <-

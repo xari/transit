@@ -45,8 +45,6 @@ mod_connections_wrapper_server <-
             need(trip_details()$to, 'Needs a destination.')
           )
 
-          print(trip_details())
-
           get_connections(trip_details())
         })
 

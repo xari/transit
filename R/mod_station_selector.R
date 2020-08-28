@@ -87,11 +87,11 @@ mod_station_selector_server <-
         input$station,
         ignoreInit = TRUE,
         session$sendCustomMessage(ns("station"),
-                                  get_stations_beginning_with(station_d())
+                                  # get_stations_beginning_with(station_d())
                                   # Can also be done using static RDS
-                                  # stations %>%
-                                  #   dplyr::filter(stringr::str_detect(tolower(label), tolower(input$station))) %>%
-                                  #   head(10)
+                                  stations %>%
+                                    dplyr::filter(stringr::str_detect(tolower(label), tolower(input$station))) %>%
+                                    head(10)
                                   )
         )
 
