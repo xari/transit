@@ -1,0 +1,12 @@
+name: transit
+title: transit
+username:
+account: xari-dev
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1977681
+bundleId: 3566838
+url: https://xari-dev.shinyapps.io/transit/
+when: 1598616011.71555
+asMultiple: FALSE
+asStatic: FALSE

@@ -10,3 +10,4 @@ $run_dev.*
 ^package\.json$
 ^webpack\.config\.js$
 ^yarn\.lock$
+^rsconnect$

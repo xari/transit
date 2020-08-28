@@ -1,0 +1,12 @@
+name: transit
+title: transit
+username: harry
+account: harry
+server: exts.site
+hostUrl: https://exts.site/__api__
+appId: 68
+bundleId: 609
+url: https://exts.site/content/68/
+when: 1598608688.10946
+asMultiple: FALSE
+asStatic: FALSE
