@@ -1,3 +1,10 @@
+
+# Remember that UI code doesn't have to be put directly inside 
+# the module's root UI function.
+#
+# In this case, we're keeping our UI a little easier to read by
+# breaking it up into three separate functions that we can call
+# from inside of our module's root UI function.
 top_row <- function(ns) {
   fluidRow(
     column(
@@ -25,6 +32,12 @@ top_row <- function(ns) {
   )
 }
 
+# This piece contains to inputs that relate to the "time" portion
+# of our journey.
+# Both inputs are custom Shiny inputs that come from the ShinieR
+# package that we'll explore in another subject when we learn how
+# to package Shiny modules in an R package that we can use in
+# multiple Shiny apps.
 time_inputs <- function(ns) {
   div(
     class = "form-group shiny-input-container switch-container",
@@ -47,6 +60,7 @@ time_inputs <- function(ns) {
   )
 }
 
+# Bottom row will render the time_inputs.
 bottom_row <- function(ns) {
   fluidRow(column(4,
                   dateInput(ns("date"),
@@ -103,6 +117,8 @@ mod_trip_selector_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    # Render three station selector modules, and return
+    # the input value from each.
     from <-
       mod_station_selector_server("station_selector_ui_origin")
 
@@ -112,6 +128,11 @@ mod_trip_selector_server <- function(id) {
     via <-
       mod_station_selector_server("station_selector_ui_via")
 
+    # Wouldn't it be cool if the submit button updated it's text
+    # after the first time that its rendered?
+    # Well... It can do just that if we attach a call to updateActionButton()
+    # to a click-event of the submit button.
+    # A click-event just means "when a user clicks on the button".
     observeEvent(input$submit_btn, {
       req(from$station,
           'Needs an origin.',
@@ -124,15 +145,16 @@ mod_trip_selector_server <- function(id) {
                          icon = icon("redo"))
     })
 
+    # Return the form values whenever the submit button is clicked.
     eventReactive(
       input$submit_btn,
       list(
-        "from" = isolate(from$station),
-        "to" = isolate(to$station),
-        "via" = isolate(via$station),
-        "date" = isolate(input$date),
-        "time" = isolate(input$time),
-        "isArrivalTime" = isolate(as.numeric(input$isArrivalTime))
+        "from" = from$station,
+        "to" = to$station,
+        "via" = via$station,
+        "date" = input$date,
+        "time" = input$time,
+        "isArrivalTime" = as.numeric(input$isArrivalTime)
       )
     )
   })

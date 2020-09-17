@@ -52,6 +52,7 @@ mod_details_wrapper_server <- function(id, trip_details){
 			     connections <- mod_connections_wrapper_server("connections_wrapper",
 									   trip_details)
 
+			     # Update the helper text once the connections table is available.
 			     observe({
 				     req(connections$connections())
 
@@ -63,10 +64,13 @@ mod_details_wrapper_server <- function(id, trip_details){
 						"Bon voyage!"))
 			     })
 
+			     # Make sure that a connection has been selected from the buttons.
+			     # Then use that selection to pass the 
 			     output$trip_gt <- gt::render_gt({
 				     validate(need(!is.na(connections$selected_connection()),
 						   "Please select a connection."))
 
+				     # Get the selected connection from the connections table.
 				     unique_connection <-
 					     connections$connections() %>%
 					     dplyr::slice(connections$selected_connection())
@@ -93,8 +97,9 @@ mod_details_wrapper_server <- function(id, trip_details){
 
 			     output$map <- renderPlot({
 				     validate(need(connections$selected_connection(),
-						   "Please select one of the connections."))
+						   "Please select a connection."))
 
+				     # Surface the nested stops table from the connection.
 				     hoist_stops_from_connections(connections$connections(),
 								  connections$selected_connection()) %>%
 				     get_map()
