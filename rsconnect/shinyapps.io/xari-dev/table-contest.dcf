@@ -1,0 +1,10 @@
+name: table-contest
+title:
+username:
+account: xari-dev
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3231561
+bundleId: 3859865
+url: https://xari-dev.shinyapps.io/table-contest/
+when: 1605354321.38031

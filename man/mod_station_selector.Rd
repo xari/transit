@@ -5,7 +5,12 @@
 \alias{mod_station_selector_server}
 \title{mod_station_selector_ui and mod_station_selector_server}
 \usage{
-mod_station_selector_ui(id, label = "Select a station.", placeholder = NULL)
+mod_station_selector_ui(
+  id,
+  label = "Select a station.",
+  placeholder = NULL,
+  selected = NULL
+)
 
 mod_station_selector_server(id)
 }

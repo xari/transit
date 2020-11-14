@@ -17,13 +17,15 @@
 mod_station_selector_ui <-
   function(id,
            label = "Select a station.",
-           placeholder = NULL) {
+           placeholder = NULL,
+           selected = NULL) {
     ns <- NS(id)
 
     selectizeInput(
       ns("station"),
       label,
       choices = NULL,
+      selected = selected,
       options = list(
         load = I(
           stringr::str_interp(

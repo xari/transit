@@ -1,3 +1,5 @@
+library(gt)
+
 get_stations_beginning_with <- function(search_string) {
   stringr::str_interp("http://transport.opendata.ch/v1/locations?query=${search_string}&limit=10") %>%
     httr::GET() %>%

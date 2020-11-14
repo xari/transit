@@ -1,8 +1,8 @@
 Package: transit
-Title: Transit
+Title: Travel Planner
 Version: 0.0.0.9000
 Authors@R: person('Harry', 'Anderson', email = 'hrtanderson@gmail.com', role = c('cre', 'aut'))
-Description: Public Transit UI for Switzerland
+Description: Travel Planner for Switzerland
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
@@ -28,10 +28,11 @@ Imports:
     shinieR (>= 0.0.0.9006),
     ggmap,
     pkgload,
-    gt
+    gt,
+    emo
 RoxygenNote: 7.1.1
-URL: https://github.com/epfl-exts/transit.git
-BugReports: https://github.com/epfl-exts/transit.git/issues
+URL: https://github.com/xari/transit.git
+BugReports: https://github.com/xari/transit.git/issues
 Suggests: 
     testthat (>= 2.1.0)
 Remotes: 

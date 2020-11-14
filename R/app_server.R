@@ -12,7 +12,7 @@ app_server <- function(input, output,session) {
   mod_details_wrapper_server("details_wrapper", trip_details)
 
   # Dynamically render logos for the following packages.
-  package_names <- c("shiny", "golem", "tidyverse")
+  package_names <- c("shiny", "golem", "gt")
 
   # This variable creates a vector of images.
   package_logos <-

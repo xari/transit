@@ -24,27 +24,31 @@ app_ui <- function() {
           div(
             class = "jumbotron",
             h1(class = "display-4",
-               "All aboard!",
-               tags$br(),
+               "Swiss Public Transit Travel Planner",
+               emo::ji("switzerland"),
+               tags$hr(),
                tags$small("Select your trip below.")),
             p(
               class = "lead",
-              "You can choose from any station or stop in Switzerland: train, tram, bus, or boat!"
+              "You can choose from any station or stop in Switzerland: train, tram, bus, or boat!",
+              emo::ji("train"),
+              emo::ji("bus"),
+              emo::ji("aerial_tramway"),
+              emo::ji("ferry")
             ),
             tags$hr(class = "my-4"),
-            mod_trip_selector_ui("trip_selector")
-          )),
-        mod_details_wrapper_ui("details_wrapper")
+            fluidRow(
+              column(4, mod_trip_selector_ui("trip_selector")),
+              column(8, mod_details_wrapper_ui("details_wrapper"))
+            )
+          ))
     ),
     tags$footer(
       div(
         class = "container",
         p(
           class = "mb-4",
-          "This app was built by TeamR at the",
-          a(href = "https://www.extensionschool.ch/", "EPFL Extension School.", target = "_blank"),
-          tags$br(),
-          "We'd like to say a special thank you the maintainers of"
+          "This app was built with"
         ),
         uiOutput("footer_logos")
       )

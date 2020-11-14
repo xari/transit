@@ -1,37 +1,3 @@
-
-# Remember that UI code doesn't have to be put directly inside 
-# the module's root UI function.
-#
-# In this case, we're keeping our UI a little easier to read by
-# breaking it up into three separate functions that we can call
-# from inside of our module's root UI function.
-top_row <- function(ns) {
-  fluidRow(
-    column(
-      4,
-      mod_station_selector_ui(
-        ns("station_selector_ui_origin"),
-        label = "Origin*",
-        placeholder = "Nyon"
-      )
-    ),
-    column(
-      4,
-      mod_station_selector_ui(
-        ns("station_selector_ui_destination"),
-        label = "Destination*",
-        placeholder = "Basel SBB"
-      )
-    ),
-    column(
-      4,
-      mod_station_selector_ui(ns("station_selector_ui_via"),
-                              label = "Via (optional)",
-                              placeholder = "Bern")
-    )
-  )
-}
-
 # This piece contains to inputs that relate to the "time" portion
 # of our journey.
 # Both inputs are custom Shiny inputs that come from the ShinieR
@@ -41,16 +7,15 @@ top_row <- function(ns) {
 time_inputs <- function(ns) {
   div(
     class = "form-group shiny-input-container switch-container",
-    "Time",
     timeInput(
       ns("time"),
+      "Time",
       configuration = list(
         disableClock = TRUE,
         format = "HH:mm",
         hourPlaceholder = "HH",
         minutePlaceholder = "MM"
-      )
-    ),
+    )),
     switchInput(ns("isArrivalTime"),
                 c("Departing", "Arriving"),
                 configuration = list(icons = list(
@@ -58,28 +23,6 @@ time_inputs <- function(ns) {
                   unchecked = NULL
                 )))
   )
-}
-
-# Bottom row will render the time_inputs.
-bottom_row <- function(ns) {
-  fluidRow(column(4,
-                  dateInput(ns("date"),
-                            "Date")),
-           column(4,
-                  time_inputs(ns)),
-           column(4,
-                  div(
-                    class = "form-group shiny-input-container",
-                    tags$label(class = "control-label",
-                               "Ready?",
-                               `for` = ns("submit_btn")),
-                    actionButton(
-                      ns("submit_btn"),
-                      label = "Find connection",
-                      icon = icon("search"),
-                      class = "btn-primary",
-                      style = "display: block"
-                    ))))
 }
 
 # Module UI
@@ -102,8 +45,33 @@ mod_trip_selector_ui <- function(id) {
   ns <- NS(id)
 
   tagList(
-    top_row(ns),
-    bottom_row(ns)
+      mod_station_selector_ui(
+        ns("station_selector_ui_origin"),
+        label = "Origin*",
+        placeholder = "Nyon",
+        selected = "Geneva"
+      ),
+      mod_station_selector_ui(
+        ns("station_selector_ui_destination"),
+        label = "Destination*",
+        placeholder = "Bern",
+        selected = "Scuol-Tarasp"
+      ),
+      dateInput(ns("date"),
+                "Date"),
+      time_inputs(ns),
+      div(
+        class = "form-group shiny-input-container",
+        tags$label(class = "control-label",
+                   "Ready?",
+                   `for` = ns("submit_btn")),
+        actionButton(
+          ns("submit_btn"),
+          label = "Find connection",
+          icon = icon("search"),
+          class = "btn-primary",
+          style = "display: block")
+       )
   )
 }
 

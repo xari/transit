@@ -16,28 +16,12 @@
 mod_details_wrapper_ui <- function(id) {
   ns <- NS(id)
 
-  div(class = "container trip_view_wrapper",
-      div(
-        id = "helper-text",
-        class = "text-center mx-auto w-50 mb-4",
-        p(
-          "Once you've set your trip details using the controls above, you'll be able to view the proposed itineraries here below."
-        )
-      ),
-      fluidRow(
-        column(5,
-               mod_connections_wrapper_ui(ns(
-                 "connections_wrapper"
-               ))),
-        column(7,
-               tabsetPanel(
-                 tabPanel("Itinerary", gt::gt_output(ns("trip_gt"))),
-                 tabPanel("Map", plotOutput(ns("map")))
-               ))
-      ))
+  div(class="shadow-sm",
+    gt::gt_output(ns("trip_gt"))
+  )
 }
 
-# Module Serveri
+# Module Server
 
 #' @rdname mod_details_wrapper
 #' @export
@@ -47,62 +31,42 @@ mod_details_wrapper_server <- function(id, trip_details){
 	moduleServer(id, function(input, output, session) {
 			     ns <- session$ns
 
-			     # Returns the connections table
-			     # along with the index of the selected connection
-			     connections <- mod_connections_wrapper_server("connections_wrapper",
-									   trip_details)
+			      # Returns: a tibble
+			      connection <-
+				reactive({
+				  validate(
+				    need(trip_details()$from, 'Needs an origin.'),
+				    need(trip_details()$to, 'Needs a destination.')
+				  )
 
-			     # Update the helper text once the connections table is available.
-			     observe({
-				     req(connections$connections())
-
-				     removeUI("#helper-text p")
-
-				     insertUI("#helper-text",
-					      "afterBegin",
-					      p(class = "lead",
-						"Bon voyage!"))
-			     })
+				  get_connections(trip_details()) %>%
+				    dplyr::slice(1)
+				})
 
 			     # Make sure that a connection has been selected from the buttons.
-			     # Then use that selection to pass the 
+			     # Then use that selection to pass the
 			     output$trip_gt <- gt::render_gt({
-				     validate(need(!is.na(connections$selected_connection()),
+				     validate(need(!is.na(connection()),
 						   "Please select a connection."))
 
-				     # Get the selected connection from the connections table.
-				     unique_connection <-
-					     connections$connections() %>%
-					     dplyr::slice(connections$selected_connection())
-
 				     title <- paste(
-						    unique_connection %>%
+						    connection() %>%
 							    purrr::pluck("origin"),
 						    "—",
-						    unique_connection %>%
+						    connection() %>%
 							    purrr::pluck("destination")
 				     )
 
 				     subtitle <- paste(
-						       unique_connection %>%
+						       connection() %>%
 							       purrr::pluck("departure"),
 						       "—",
-						       unique_connection %>%
+						       connection() %>%
 							       purrr::pluck("arrival")
 				     )
 
-				     format_data_for_gt(unique_connection) %>%
+				     format_data_for_gt(connection()) %>%
 					     get_gt(title, subtitle)
-			     })
-
-			     output$map <- renderPlot({
-				     validate(need(connections$selected_connection(),
-						   "Please select a connection."))
-
-				     # Surface the nested stops table from the connection.
-				     hoist_stops_from_connections(connections$connections(),
-								  connections$selected_connection()) %>%
-				     get_map()
 			     })
       })
 }
